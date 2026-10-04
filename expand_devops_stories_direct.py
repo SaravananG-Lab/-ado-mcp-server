@@ -223,7 +223,9 @@ class StoryExpander:
         return {"expanded": [], "failed": [], "pending": []}
 
     def _save_progress(self):
-        """Save expansion progress"""
+        """Save expansion progress (skip in dry-run mode)"""
+        if getattr(self, 'dry_run', False):
+            return
         with open(self.progress_file, 'w') as f:
             json.dump(self.progress, f, indent=2)
 
@@ -273,6 +275,7 @@ class StoryExpander:
     def expand_batch(self, stories: List[Dict], dry_run: bool = False) -> Dict:
         """Expand a batch of stories"""
         results = {"expanded": 0, "failed": 0, "errors": []}
+        self.dry_run = dry_run
 
         print(f"\n[EPIC] Expanding {len(stories)} stories...")
         print(f"{'='*70}")
@@ -304,14 +307,12 @@ class StoryExpander:
                     print(f"  -> Updating ADO...")
                     self.ado.update_work_item(work_item_id, expanded)
                     print(f"  [OK] Updated in Azure DevOps")
-
-                    # Track progress
+                    # Track progress only on real update
                     self.progress['expanded'].append(str(work_item_id))
-                    results["expanded"] += 1
                 else:
                     print(f"  [DRY RUN] Would update work item")
-                    self.progress['expanded'].append(str(work_item_id))
-                    results["expanded"] += 1
+
+                results["expanded"] += 1
 
                 # Small delay between calls
                 if idx < len(stories):

@@ -204,14 +204,14 @@ The implementation includes: configuration of infrastructure, integration with d
                     "- Encryption at rest and in transit required"
                 ],
                 "acceptance_criteria": [
-                    "1. [ ] Component deployed and accessible",
-                    "2. [ ] Integration tests pass with dependent services",
-                    "3. [ ] Monitoring dashboards configured",
-                    "4. [ ] Load testing confirms performance targets",
-                    "5. [ ] Documentation completed",
-                    "6. [ ] Security scan passes with 0 high/critical findings",
-                    "7. [ ] Disaster recovery procedure tested",
-                    "8. [ ] User acceptance testing completed"
+                    "1. Component deployed and accessible",
+                    "2. Integration tests pass with dependent services",
+                    "3. Monitoring dashboards configured",
+                    "4. Load testing confirms performance targets",
+                    "5. Documentation completed",
+                    "6. Security scan passes with 0 high/critical findings",
+                    "7. Disaster recovery procedure tested",
+                    "8. User acceptance testing completed"
                 ],
                 "dependencies": [
                     "Azure infrastructure provisioning",
