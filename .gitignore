@@ -19,8 +19,9 @@ build/
 *.swo
 *~
 
-# Generated reports and mappings (output folder)
-output/
+# Generated reports and mappings
+output/*
+!output/.gitkeep
 traceability_report_*.csv
 traceability_report_*.json
 ado_traceability_map.json
