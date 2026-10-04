@@ -15,63 +15,83 @@ class StoryExpander:
 
     @staticmethod
     def build_prompt(story: dict) -> str:
-        """Build Claude prompt for story expansion"""
-        return f"""You are a Senior Agile Technical Writer. Expand the following Azure DevOps user story into a clear, implementation-ready Agile story while preserving the original intent and scope.
+        """Build Claude prompt for story refinement using given context"""
+        return f"""You are a Senior Technical Writer and Agile coach refining Azure DevOps user stories for clarity and testability.
 
 STORY INFORMATION:
 
 * Story Title: {story.get('title', 'N/A')}
 * Current Description: {story.get('description', 'N/A')}
-* Epic: {story.get('epic', 'N/A')}
-* Feature: {story.get('feature', 'N/A')}
-* Priority: {story.get('priority', 'Medium')}
+* Technical Requirement: {story.get('technical_requirement', 'N/A')}
 * Requirement ID: {story.get('requirement_id', 'N/A')}
+* Priority: {story.get('priority', 'Medium')}
 
-INSTRUCTIONS:
+REFINEMENT INSTRUCTIONS:
 
-1. Preserve the original business and technical intent. Do not add unrelated functionality.
-2. Preserve the original Story Title unless it is clearly incomplete or misleading.
-3. Use the standard Agile format "As a [user/role], I want [capability], so that [business value]" when a meaningful user/actor and business outcome can be identified.
-4. For technical, infrastructure, DevOps, integration, or platform stories where the Agile format would be artificial, use a clear capability-oriented statement instead.
-5. Keep the description focused on what needs to be delivered, why it is needed, expected behavior, and relevant integrations.
-6. Identify only relevant assumptions. Do not invent technologies, versions, APIs, performance numbers, SLAs, or business rules.
-7. Provide concise, testable acceptance criteria. Normally provide 3-8 criteria based on story complexity. Do not add criteria merely to reach a minimum number.
-8. Include validation, error handling, security, integration, logging, monitoring, or performance criteria only when relevant.
-9. Identify dependencies if applicable.
-10. Flag the story if it is too broad, can be split, or has important missing information.
-11. Keep acceptance criteria concise. Use simple numbered statements; use Given/When/Then only when it improves clarity.
+1. PRESERVE existing details - do not remove or change the original requirement
+2. EXPAND with detailed functional and technical information where applicable
+3. IDENTIFY missing information, assumptions, dependencies, and open questions
+4. PREPARE clear, detailed, testable acceptance criteria using Given/When/Then format
+5. COVER positive, negative, validation, error, security, integration, and audit scenarios when relevant
+6. DO NOT invent business requirements - clearly mark all assumptions
+7. DO NOT update ADO automatically - output is for review and approval
+
+ACCEPTANCE CRITERIA FORMAT:
+Use Given/When/Then BDD format where it improves clarity:
+- Given [precondition]
+- When [action]
+- Then [expected result]
+
+Include scenarios for:
+- Positive path (happy path)
+- Negative path (error handling)
+- Validation scenarios
+- Error conditions
+- Security considerations
+- Integration points
+- Audit/logging requirements
 
 OUTPUT:
 Return ONLY valid JSON (no Markdown, no code fences):
 
 {{
-  "user_story": "As a [user/role], I want [capability], so that [business value].",
-  "detailed_description": "2-3 concise paragraphs.",
-  "assumptions": [
-    "- Assumption 1",
-    "- Assumption 2"
+  "existing_story": "Original story title and description as-is",
+  "expanded_story": "Enhanced description with technical details and functional requirements",
+  "missing_information": [
+    "Question 1 or missing detail",
+    "Question 2 or missing detail"
   ],
-  "acceptance_criteria": [
-    "1. Concise, testable criterion.",
-    "2. Concise, testable criterion."
+  "assumptions": [
+    "- Assumption 1 (clearly marked)",
+    "- Assumption 2 (clearly marked)"
   ],
   "dependencies": [
-    "Dependency 1 (if any)"
+    "Dependency 1",
+    "Dependency 2"
   ],
-  "story_quality": {{
+  "acceptance_criteria": [
+    "Given [precondition] When [action] Then [result]",
+    "Given [precondition] When [action] Then [result]"
+  ],
+  "open_questions": [
+    "Question for clarification?",
+    "Question for approval?"
+  ],
+  "story_quality_assessment": {{
     "is_broad": false,
     "can_be_split": false,
-    "missing_information": [],
-    "potential_dependencies": []
+    "clarity_level": "high/medium/low",
+    "testing_complexity": "high/medium/low"
   }}
 }}
 
 RULES:
-* Return only valid JSON.
-* Do not use Markdown or code fences.
-* Do not invent requirements.
-* Do not duplicate information unnecessarily.
-* Keep the original story scope and intent unchanged."""
+* Return only valid JSON
+* Do not invent business requirements
+* Clearly mark all assumptions with "ASSUMPTION:"
+* Preserve original story intent and scope
+* Each AC should be testable and measurable
+* Include both happy path and error scenarios"""
 
     @staticmethod
     def parse_response(content: str) -> dict:
@@ -85,13 +105,21 @@ RULES:
                 json_str = content.split("```")[1].split("```")[0]
 
             parsed = json.loads(json_str.strip())
+
+            # Support both old and new response formats
             return {
+                # Old format fields (for backward compatibility)
                 "user_story": parsed.get("user_story", ""),
-                "expanded_description": parsed.get("detailed_description", ""),
+                "expanded_description": parsed.get("expanded_story", parsed.get("detailed_description", "")),
                 "assumptions": parsed.get("assumptions", []),
                 "acceptance_criteria": parsed.get("acceptance_criteria", []),
                 "dependencies": parsed.get("dependencies", []),
-                "story_quality": parsed.get("story_quality", {})
+                "story_quality": parsed.get("story_quality_assessment", parsed.get("story_quality", {})),
+
+                # New refinement format fields
+                "existing_story": parsed.get("existing_story", ""),
+                "missing_information": parsed.get("missing_information", []),
+                "open_questions": parsed.get("open_questions", [])
             }
         except Exception as e:
             raise Exception(f"Error parsing Claude response: {e}")
