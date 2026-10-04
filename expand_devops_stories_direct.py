@@ -134,14 +134,23 @@ class AzureDevOpsClient:
             }
         ]
 
-        # Add acceptance criteria to its dedicated field
+        # Add acceptance criteria to its dedicated field - format as HTML list
         acceptance_criteria = expanded_data.get('acceptance_criteria', [])
         if acceptance_criteria:
-            ac_text = "\n".join(acceptance_criteria) if isinstance(acceptance_criteria, list) else acceptance_criteria
+            if isinstance(acceptance_criteria, list):
+                # Format as HTML ordered list for proper display in ADO
+                ac_html = "<ol>\n"
+                for item in acceptance_criteria:
+                    # Remove leading numbers/bullets if present, just keep the text
+                    clean_item = item.lstrip('0123456789.-*• ').strip()
+                    ac_html += f"<li>{clean_item}</li>\n"
+                ac_html += "</ol>"
+            else:
+                ac_html = acceptance_criteria
             patch.append({
                 "op": "add",
                 "path": "/fields/Microsoft.VSTS.Common.AcceptanceCriteria",
-                "value": ac_text
+                "value": ac_html
             })
 
         url = f"{self.base_url}/{work_item_id}"

@@ -249,35 +249,35 @@ class MCPServer:
     def _generate_acceptance_criteria(self, primary_text: str, priority: str) -> list:
         """Generate acceptance criteria based on primary text and priority"""
         criteria = [
-            "1. Feature implemented and code reviewed",
-            "2. Unit tests written with >80% coverage"
+            "- Feature implemented and code reviewed",
+            "- Unit tests written with >80% coverage"
         ]
 
         primary_lower = primary_text.lower()
 
         if any(x in primary_lower for x in ["validat", "check", "verify", "enforce"]):
             criteria.extend([
-                "3. Validation logic handles edge cases correctly",
-                "4. Error messages are clear and actionable",
-                "5. Invalid inputs are properly rejected"
+                "- Validation logic handles edge cases correctly",
+                "- Error messages are clear and actionable",
+                "- Invalid inputs are properly rejected"
             ])
         elif any(x in primary_lower for x in ["template", "generate", "format"]):
             criteria.extend([
-                "3. Generated output matches expected format",
-                "4. Performance is acceptable for typical workload",
-                "5. Backward compatibility maintained if applicable"
+                "- Generated output matches expected format",
+                "- Performance is acceptable for typical workload",
+                "- Backward compatibility maintained if applicable"
             ])
         elif any(x in primary_lower for x in ["retry", "recovery", "failover"]):
             criteria.extend([
-                "3. Retry logic works correctly with test failures",
-                "4. Exponential backoff is implemented",
-                "5. Recovery procedures are documented"
+                "- Retry logic works correctly with test failures",
+                "- Exponential backoff is implemented",
+                "- Recovery procedures are documented"
             ])
 
         criteria.extend([
-            "6. Integration tests pass with dependent services",
-            "7. Documentation updated",
-            "8. Security/compliance review completed"
+            "- Integration tests pass with dependent services",
+            "- Documentation updated",
+            "- Security/compliance review completed"
         ])
 
         return criteria
