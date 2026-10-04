@@ -799,33 +799,46 @@ class BulkImporter:
 def main():
     """CLI entry point"""
     import argparse
+    from config import load_env_file, get_config
+
+    # Load from .env file if it exists
+    load_env_file()
 
     parser = argparse.ArgumentParser(
         description="Bulk import user stories from Excel to Azure DevOps",
         epilog="""
 Examples:
   python ado_mcp_server.py stories.csv --org-url https://dev.azure.com/myorg --project MyProject --pat <PAT>
-  python ado_mcp_server.py stories.csv --org-url "https://dev.azure.com/myorg/MyProject" --project MyProject --pat <PAT>
+  python ado_mcp_server.py --env  (read from .env file)
 
-Note: org-url can be either the organization URL alone (https://dev.azure.com/OrganizationName) or
-      include the project name (https://dev.azure.com/OrganizationName/ProjectName). Both formats are supported.
+Note: Arguments override .env file values.
         """
     )
-    parser.add_argument("excel_file", help="Path to Excel file")
-    parser.add_argument("--org-url", required=True, help="Azure DevOps org URL (e.g., https://dev.azure.com/OrganizationName or https://dev.azure.com/OrganizationName/ProjectName)")
-    parser.add_argument("--project", required=True, help="Project name")
-    parser.add_argument("--pat", required=True, help="Personal Access Token")
+    parser.add_argument("excel_file", nargs="?", help="Path to Excel file (or use EXCEL_FILE_PATH in .env)")
+    parser.add_argument("--org-url", help="Azure DevOps org URL (or use AZURE_ORG_URL in .env)")
+    parser.add_argument("--project", help="Project name (or use AZURE_PROJECT_NAME in .env)")
+    parser.add_argument("--pat", help="Personal Access Token (or use AZURE_PAT in .env)")
     parser.add_argument("--mapping-file", default="ado_traceability_map.json",
                        help="Output mapping file")
+    parser.add_argument("--env", action="store_true", help="Use .env file for all configuration")
 
     args = parser.parse_args()
 
+    # Get values from args or .env
+    excel_file = args.excel_file or get_config("EXCEL_FILE_PATH")
+    org_url = args.org_url or get_config("AZURE_ORG_URL")
+    project = args.project or get_config("AZURE_PROJECT_NAME")
+    pat = args.pat or get_config("AZURE_PAT")
+
+    if not all([excel_file, org_url, project, pat]):
+        parser.error("Missing required arguments. Provide via CLI args or .env file (see .env.example)")
+
     # Run import
     importer = BulkImporter(
-        args.excel_file,
-        args.org_url,
-        args.project,
-        args.pat
+        excel_file,
+        org_url,
+        project,
+        pat
     )
 
     result = importer.run()

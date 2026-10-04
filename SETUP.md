@@ -58,7 +58,25 @@ See `sample_stories.csv` for example.
 
 ## First Run
 
-### Option A: Command Line (Recommended)
+### Option A: Using .env File (Recommended)
+
+```bash
+# Copy template
+cp .env.example .env
+
+# Edit .env with your values
+# AZURE_ORG_URL=https://dev.azure.com/myorg
+# AZURE_PROJECT_NAME=MyProject
+# AZURE_PAT=your_token_here
+# EXCEL_FILE_PATH=sample_stories.csv
+
+# Run import
+python ado_mcp_server.py
+```
+
+See `ENV_SETUP.md` for all environment variables.
+
+### Option B: Command Line
 
 ```bash
 python ado_mcp_server.py sample_stories.csv \
@@ -67,16 +85,21 @@ python ado_mcp_server.py sample_stories.csv \
   --pat your_token_here
 ```
 
-### Option B: Python Script
+### Option C: Python API
 
 ```python
 from ado_mcp_server import BulkImporter
+from config import get_ado_config, get_config
+
+# Load from .env
+config = get_ado_config()
+excel_file = get_config("EXCEL_FILE_PATH", "sample_stories.csv")
 
 importer = BulkImporter(
-    excel_file="sample_stories.csv",
-    org_url="https://dev.azure.com/myorg",
-    project_name="MyProject",
-    pat="your_token_here"
+    excel_file=excel_file,
+    org_url=config["org_url"],
+    project_name=config["project_name"],
+    pat=config["pat"]
 )
 
 result = importer.run()
