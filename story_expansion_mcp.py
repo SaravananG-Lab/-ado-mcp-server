@@ -216,122 +216,201 @@ class MCPServer:
             return f"{req_prefix}{primary_text}" if "requirement" in requirement_id.lower() or len(primary_text) > 50 else f"Implement {primary_text} to enhance platform capabilities and improve user experience. This feature includes proper error handling, logging, and integration with existing systems."
 
     def _generate_assumptions(self, primary_text: str, priority: str) -> list:
-        """Generate assumptions based on primary text"""
-        assumptions = ["- Implementation will follow existing codebase standards"]
-
+        """Generate story-specific assumptions based on technical requirement"""
         primary_lower = primary_text.lower()
+        assumptions = []
 
-        if any(x in primary_lower for x in ["platform", "infrastructure", "deployment", "kubernetes", "azure"]):
-            assumptions.extend([
-                "- Azure cloud infrastructure is available",
-                "- Kubernetes/AKS cluster is operational",
-                "- Network policies and security groups are pre-configured"
-            ])
-
-        if any(x in primary_lower for x in ["validat", "verify", "check", "compliance"]):
-            assumptions.extend([
-                "- Authoritative data sources are accessible",
-                "- Business rules and validation logic are documented",
-                "- Real-time or periodic data synchronization is acceptable"
-            ])
-
-        if any(x in primary_lower for x in ["template", "generate", "format"]):
-            assumptions.extend([
-                "- Template format is standardized across the platform",
-                "- Template versioning is supported"
-            ])
-
-        if priority in ["P0", "P1"]:
-            assumptions.append("- This change requires backward compatibility")
-
-        return assumptions if len(assumptions) > 1 else assumptions + ["- Standard testing practices apply"]
-
-    def _generate_acceptance_criteria(self, primary_text: str, priority: str) -> list:
-        """Generate context-specific acceptance criteria based on story type"""
-        primary_lower = primary_text.lower()
-        criteria = []
-
-        # Generate specific criteria based on story type
-        if any(x in primary_lower for x in ["validat", "check", "verify", "enforce", "compliance"]):
-            criteria = [
-                "- Validation logic correctly handles all input types",
-                "- Edge cases and error conditions properly handled",
-                "- Validation rules match business requirements",
-                "- Clear error messages for invalid inputs",
-                "- Integration with authoritative data sources verified",
-                "- Performance meets requirements for typical data volume",
-                "- Audit trail/logging of validation results",
-                "- Unit and integration tests with >80% coverage"
+        # Generate assumptions based on story type
+        if any(x in primary_lower for x in ["validat", "verify", "check", "audit", "against authoritative"]):
+            assumptions = [
+                "- Authoritative data sources are accessible and reliable",
+                "- Business validation rules are documented and stable",
+                "- Data quality standards are defined",
+                "- Real-time or periodic data sync is acceptable",
+                "- Error handling for source unavailability is acceptable"
             ]
-        elif any(x in primary_lower for x in ["reconcil", "sync", "align"]):
-            criteria = [
-                "- Reconciliation logic correctly identifies discrepancies",
-                "- Data synchronization matches source and target",
-                "- Duplicate detection and handling working",
-                "- Reconciliation reports accurate and complete",
-                "- Error handling for failed reconciliation",
-                "- Performance acceptable for data volumes",
-                "- Rollback procedures documented and tested",
-                "- Audit trail of all reconciliation actions"
+        elif any(x in primary_lower for x in ["reconcil", "sync", "synchroniz", "align", "match"]):
+            assumptions = [
+                "- Source and target systems are accessible",
+                "- Data mapping rules are well-defined",
+                "- Conflict resolution strategy is determined",
+                "- Acceptable sync frequency/latency is defined",
+                "- Rollback capability is available"
             ]
-        elif any(x in primary_lower for x in ["retry", "recovery", "resilience", "failover"]):
-            criteria = [
-                "- Retry logic works with transient failures",
-                "- Exponential backoff properly implemented",
-                "- Maximum retry attempts enforced",
-                "- Recovery procedures documented",
-                "- Circuit breaker/failure handling working",
-                "- Monitoring and alerting configured",
-                "- Tested with simulated failure scenarios",
-                "- Performance impact acceptable"
+        elif any(x in primary_lower for x in ["retry", "recover", "failover", "resilience", "failure"]):
+            assumptions = [
+                "- Failure modes and recovery strategies are defined",
+                "- Monitoring and alerting infrastructure is in place",
+                "- Acceptable downtime/RPO/RTO are established",
+                "- Testing with failure scenarios is feasible",
+                "- Circuit breaker patterns are appropriate"
             ]
-        elif any(x in primary_lower for x in ["template", "generate", "format", "card"]):
-            criteria = [
-                "- Template/generation output matches specification",
-                "- All required fields populated correctly",
-                "- Formatting rules applied properly",
-                "- Performance acceptable for typical usage",
-                "- Backward compatibility verified if applicable",
-                "- Edge cases handled gracefully",
-                "- User-friendly error messages for failures",
-                "- Comprehensive test coverage"
+        elif any(x in primary_lower for x in ["template", "generat", "format", "card", "document", "letter"]):
+            assumptions = [
+                "- Template structure and format are finalized",
+                "- All required template variables are identified",
+                "- Output format standards are established",
+                "- Volume and performance targets defined",
+                "- Backwards compatibility requirements understood"
             ]
-        elif any(x in primary_lower for x in ["index", "search", "query"]):
-            criteria = [
-                "- Index creation/updates working correctly",
-                "- Search functionality returns accurate results",
-                "- Query performance meets SLA",
-                "- Filtering and sorting working as expected",
-                "- Handling of special characters/edge cases",
-                "- Index consistency verified",
-                "- Scalability tested with large datasets",
-                "- Search relevance meeting expectations"
+        elif any(x in primary_lower for x in ["index", "search", "query", "find", "retriev"]):
+            assumptions = [
+                "- Data to be indexed is available and accessible",
+                "- Search criteria/filters are well-defined",
+                "- Query performance targets are established",
+                "- Index update frequency is acceptable",
+                "- Data consistency requirements are understood"
             ]
-        elif any(x in primary_lower for x in ["score", "rank", "calculat", "comput"]):
-            criteria = [
-                "- Scoring/calculation logic mathematically correct",
-                "- All input parameters processed correctly",
-                "- Results match expected outcomes",
-                "- Edge cases and boundary conditions tested",
-                "- Performance acceptable for scale",
-                "- Precision/rounding handled appropriately",
-                "- Documentation of formula/algorithm clear",
-                "- Audit trail of calculation inputs/outputs"
+        elif any(x in primary_lower for x in ["score", "rank", "calculat", "comput", "gate", "weight"]):
+            assumptions = [
+                "- Calculation formula/algorithm is finalized",
+                "- All input parameters are available",
+                "- Precision and rounding rules are defined",
+                "- Performance targets for calculations are established",
+                "- Edge case handling approach is determined"
+            ]
+        elif any(x in primary_lower for x in ["select", "choice", "option", "decision", "logic", "rule"]):
+            assumptions = [
+                "- Decision rules and selection criteria are documented",
+                "- All input parameters are available",
+                "- Priority/conflict resolution is defined",
+                "- User experience expectations are clear",
+                "- Performance requirements for decision logic are known"
             ]
         else:
-            # Generic criteria for unmapped types
+            # Generic assumptions
+            assumptions = [
+                "- Requirements are clearly defined and understood",
+                "- Dependent systems are available and stable",
+                "- Performance and scale targets are established",
+                "- Security and compliance requirements are known",
+                "- Testing approach and success criteria defined"
+            ]
+
+        # Add conditional assumptions based on priority
+        if priority in ["P0", "P1"]:
+            assumptions.append("- Backward compatibility with existing data/integrations required")
+
+        # Add platform assumptions if mentioned
+        if any(x in primary_lower for x in ["platform", "infrastructure", "deployment", "kubernetes", "azure"]):
+            assumptions.insert(1, "- Azure cloud infrastructure and services are available")
+
+        return assumptions if len(assumptions) > 1 else assumptions + ["- Standard development and testing practices apply"]
+
+    def _generate_acceptance_criteria(self, primary_text: str, priority: str) -> list:
+        """Generate context-specific acceptance criteria based on technical requirement"""
+        primary_lower = primary_text.lower()
+
+        # Extract key capability from technical requirement
+        capability = self._extract_capability(primary_text)
+        criteria = []
+
+        # More comprehensive keyword matching with broader patterns
+        if any(x in primary_lower for x in ["validat", "verify", "check", "audit", "compliance", "against authoritative"]):
             criteria = [
-                "- Feature implemented according to specification",
+                f"- {capability} implemented and working correctly",
+                "- Validation/verification logic handles all specified scenarios",
+                "- Edge cases and error conditions properly handled",
+                "- Results match business and technical requirements",
+                "- Clear error messages and feedback provided",
+                "- Integration with required data sources verified",
+                "- Audit/logging of all validations complete",
+                "- Unit and integration tests with >80% coverage"
+            ]
+        elif any(x in primary_lower for x in ["reconcil", "sync", "synchroniz", "align", "match", "compare"]):
+            criteria = [
+                f"- {capability} implemented correctly",
+                "- Reconciliation/sync accurately identifies discrepancies",
+                "- Data alignment matches source and target",
+                "- Duplicate detection and resolution working",
+                "- Exception handling for failed sync scenarios",
+                "- Performance meets SLA for data volumes",
+                "- Rollback and recovery procedures tested",
+                "- Complete audit trail maintained"
+            ]
+        elif any(x in primary_lower for x in ["retry", "recover", "failover", "resilience", "fault", "failure"]):
+            criteria = [
+                f"- {capability} implemented",
+                "- Retry logic handles transient failures correctly",
+                "- Exponential backoff and timeout configured",
+                "- Maximum retry limits enforced appropriately",
+                "- Circuit breaker/fallback mechanisms working",
+                "- Recovery procedures documented and tested",
+                "- Failure scenarios tested thoroughly",
+                "- Monitoring and alerting configured"
+            ]
+        elif any(x in primary_lower for x in ["template", "generat", "format", "card", "document", "letter"]):
+            criteria = [
+                f"- {capability} generated correctly",
+                "- Output format matches specification exactly",
+                "- All required fields and sections included",
+                "- Formatting rules and styling applied correctly",
+                "- Variable substitution working for all placeholders",
+                "- Edge cases (empty fields, special chars) handled",
+                "- Performance acceptable for typical volumes",
+                "- User acceptance testing completed"
+            ]
+        elif any(x in primary_lower for x in ["index", "search", "query", "find", "retriev", "lookup"]):
+            criteria = [
+                f"- {capability} implemented",
+                "- Index creation and updates functioning correctly",
+                "- Search/query returns accurate results",
+                "- Query performance meets requirements",
+                "- Filtering and sorting work as specified",
+                "- Large dataset scalability verified",
+                "- Search relevance and accuracy validated",
+                "- Index consistency and integrity verified"
+            ]
+        elif any(x in primary_lower for x in ["score", "rank", "calculat", "comput", "gate", "weight"]):
+            criteria = [
+                f"- {capability} calculation correct",
+                "- All input parameters processed accurately",
+                "- Calculation results match expected outcomes",
+                "- Edge cases and boundary conditions tested",
+                "- Precision/rounding handled per specification",
+                "- Performance acceptable for scale",
+                "- Calculation formula/logic documented clearly",
+                "- Results audit trail maintained"
+            ]
+        elif any(x in primary_lower for x in ["select", "choice", "option", "decision", "logic", "rule"]):
+            criteria = [
+                f"- {capability} logic implemented",
+                "- Selection/decision rules working correctly",
+                "- All specified conditions evaluated properly",
+                "- Appropriate options returned for each scenario",
+                "- Edge cases and conflicts handled",
+                "- User experience meets requirements",
+                "- Performance acceptable",
+                "- Comprehensive test coverage achieved"
+            ]
+        else:
+            # Enhanced generic criteria that references the actual requirement
+            criteria = [
+                f"- {capability} implemented per specification",
+                "- Functionality tested against all requirements",
                 "- Code review completed and approved",
-                "- Unit tests written with >80% coverage",
-                "- Integration testing completed",
-                "- Documentation updated",
-                "- Performance meets requirements",
-                "- Security/compliance review passed",
+                "- Unit tests written with >80% code coverage",
+                "- Integration testing with dependent systems",
+                "- Performance and load testing completed",
+                "- Documentation updated and reviewed",
                 "- Ready for production deployment"
             ]
 
         return criteria
+
+    def _extract_capability(self, text: str) -> str:
+        """Extract main capability from technical requirement text"""
+        text = text.strip()
+        # Remove common prefixes
+        for prefix in ["the cip platform shall implement", "cip shall", "shall", "implement"]:
+            if text.lower().startswith(prefix):
+                text = text[len(prefix):].strip()
+
+        # Take first 50-80 chars of remaining text
+        if len(text) > 80:
+            text = text[:80].rsplit(' ', 1)[0]
+
+        return text.strip(": –-").lower()
 
     def _generate_dependencies(self, primary_text: str, description: str) -> list:
         """Generate dependencies based on primary text"""
