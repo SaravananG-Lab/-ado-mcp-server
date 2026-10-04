@@ -247,38 +247,89 @@ class MCPServer:
         return assumptions if len(assumptions) > 1 else assumptions + ["- Standard testing practices apply"]
 
     def _generate_acceptance_criteria(self, primary_text: str, priority: str) -> list:
-        """Generate acceptance criteria based on primary text and priority"""
-        criteria = [
-            "- Feature implemented and code reviewed",
-            "- Unit tests written with >80% coverage"
-        ]
-
+        """Generate context-specific acceptance criteria based on story type"""
         primary_lower = primary_text.lower()
+        criteria = []
 
-        if any(x in primary_lower for x in ["validat", "check", "verify", "enforce"]):
-            criteria.extend([
-                "- Validation logic handles edge cases correctly",
-                "- Error messages are clear and actionable",
-                "- Invalid inputs are properly rejected"
-            ])
-        elif any(x in primary_lower for x in ["template", "generate", "format"]):
-            criteria.extend([
-                "- Generated output matches expected format",
-                "- Performance is acceptable for typical workload",
-                "- Backward compatibility maintained if applicable"
-            ])
-        elif any(x in primary_lower for x in ["retry", "recovery", "failover"]):
-            criteria.extend([
-                "- Retry logic works correctly with test failures",
-                "- Exponential backoff is implemented",
-                "- Recovery procedures are documented"
-            ])
-
-        criteria.extend([
-            "- Integration tests pass with dependent services",
-            "- Documentation updated",
-            "- Security/compliance review completed"
-        ])
+        # Generate specific criteria based on story type
+        if any(x in primary_lower for x in ["validat", "check", "verify", "enforce", "compliance"]):
+            criteria = [
+                "- Validation logic correctly handles all input types",
+                "- Edge cases and error conditions properly handled",
+                "- Validation rules match business requirements",
+                "- Clear error messages for invalid inputs",
+                "- Integration with authoritative data sources verified",
+                "- Performance meets requirements for typical data volume",
+                "- Audit trail/logging of validation results",
+                "- Unit and integration tests with >80% coverage"
+            ]
+        elif any(x in primary_lower for x in ["reconcil", "sync", "align"]):
+            criteria = [
+                "- Reconciliation logic correctly identifies discrepancies",
+                "- Data synchronization matches source and target",
+                "- Duplicate detection and handling working",
+                "- Reconciliation reports accurate and complete",
+                "- Error handling for failed reconciliation",
+                "- Performance acceptable for data volumes",
+                "- Rollback procedures documented and tested",
+                "- Audit trail of all reconciliation actions"
+            ]
+        elif any(x in primary_lower for x in ["retry", "recovery", "resilience", "failover"]):
+            criteria = [
+                "- Retry logic works with transient failures",
+                "- Exponential backoff properly implemented",
+                "- Maximum retry attempts enforced",
+                "- Recovery procedures documented",
+                "- Circuit breaker/failure handling working",
+                "- Monitoring and alerting configured",
+                "- Tested with simulated failure scenarios",
+                "- Performance impact acceptable"
+            ]
+        elif any(x in primary_lower for x in ["template", "generate", "format", "card"]):
+            criteria = [
+                "- Template/generation output matches specification",
+                "- All required fields populated correctly",
+                "- Formatting rules applied properly",
+                "- Performance acceptable for typical usage",
+                "- Backward compatibility verified if applicable",
+                "- Edge cases handled gracefully",
+                "- User-friendly error messages for failures",
+                "- Comprehensive test coverage"
+            ]
+        elif any(x in primary_lower for x in ["index", "search", "query"]):
+            criteria = [
+                "- Index creation/updates working correctly",
+                "- Search functionality returns accurate results",
+                "- Query performance meets SLA",
+                "- Filtering and sorting working as expected",
+                "- Handling of special characters/edge cases",
+                "- Index consistency verified",
+                "- Scalability tested with large datasets",
+                "- Search relevance meeting expectations"
+            ]
+        elif any(x in primary_lower for x in ["score", "rank", "calculat", "comput"]):
+            criteria = [
+                "- Scoring/calculation logic mathematically correct",
+                "- All input parameters processed correctly",
+                "- Results match expected outcomes",
+                "- Edge cases and boundary conditions tested",
+                "- Performance acceptable for scale",
+                "- Precision/rounding handled appropriately",
+                "- Documentation of formula/algorithm clear",
+                "- Audit trail of calculation inputs/outputs"
+            ]
+        else:
+            # Generic criteria for unmapped types
+            criteria = [
+                "- Feature implemented according to specification",
+                "- Code review completed and approved",
+                "- Unit tests written with >80% coverage",
+                "- Integration testing completed",
+                "- Documentation updated",
+                "- Performance meets requirements",
+                "- Security/compliance review passed",
+                "- Ready for production deployment"
+            ]
 
         return criteria
 
