@@ -16,7 +16,7 @@ import base64
 import requests
 
 # Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent / "src"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from config import load_env_file, get_required_config
 from mcp_client import MCPClient
 
