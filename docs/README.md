@@ -1,10 +1,11 @@
 # Azure DevOps MCP Server
 
-Bulk-import user stories from Excel to Azure DevOps with automatic traceability mapping.
+Bulk-import user stories from Excel to Azure DevOps with automatic traceability mapping, and expand stories with AI-powered descriptions and acceptance criteria.
 
 ## Features
 
 - **Bulk Import** - 100+ stories from Excel to Azure DevOps
+- **AI-Powered Expansion** - Auto-generate descriptions, assumptions, and acceptance criteria
 - **Traceability** - Requirement ID → Epic → Feature → Story mapping
 - **Deduplication** - Reuse existing Epics/Features automatically
 - **Audit Reports** - CSV/JSON reports for compliance

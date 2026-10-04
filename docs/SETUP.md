@@ -57,6 +57,25 @@ entry = engine.get_entry("REQ-001")
 print(f"Epic: {entry['epic']['name']}")
 ```
 
+## Running Utility Scripts
+
+All utility and diagnostic scripts are located in the `scripts/` folder:
+
+**Expand Stories:**
+```bash
+python scripts/expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
+```
+
+**Check Configuration:**
+```bash
+python scripts/check_ado_stories.py
+```
+
+**Test MCP Server:**
+```bash
+python scripts/story_expansion_mcp.py
+```
+
 ## Environment Variables Reference
 
 See [ENV_SETUP.md](ENV_SETUP.md) for complete list.

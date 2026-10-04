@@ -33,24 +33,26 @@ AZURE_PAT=your_personal_access_token
 ### 3. Run Expansion
 ```bash
 # Test with 5 stories (dry run)
-python expand_devops_stories_direct.py --limit 5 --dry-run --no-confirm
+python scripts/expand_devops_stories_direct.py --limit 5 --dry-run --no-confirm
 
 # Expand first 100 stories
-python expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
+python scripts/expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
 ```
 
 ---
 
-## 📁 Project Files
+## 📁 Project Structure
 
 ```
-expand_devops_stories_direct.py    ← Main expansion script
-story_expansion_mcp.py             ← MCP server
-mcp_client.py                      ← MCP client library
-check_ado_stories.py               ← Diagnostic tool
+scripts/
+  expand_devops_stories_direct.py  ← Main expansion script
+  story_expansion_mcp.py           ← MCP server
+  mcp_client.py                    ← MCP client library
+  check_ado_stories.py             ← Diagnostic tool
+output/
+  expansion_progress_direct.json   ← Progress tracking (auto-generated)
 .env                               ← Configuration
 requirements.txt                   ← Dependencies
-expansion_progress_direct.json     ← Progress tracking (auto-generated)
 ```
 
 ---
@@ -73,7 +75,7 @@ Update Azure DevOps:
   System.Description ← Description + Assumptions
   Microsoft.VSTS.Common.AcceptanceCriteria ← AC
          ↓
-Track in: expansion_progress_direct.json
+Track in: output/expansion_progress_direct.json
 ```
 
 ---
@@ -83,28 +85,28 @@ Track in: expansion_progress_direct.json
 ### Expand Stories
 ```bash
 # Expand 100 stories without descriptions
-python expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
+python scripts/expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
 
 # Expand next batch
-python expand_devops_stories_direct.py --batch 2 --limit 100 --no-confirm
+python scripts/expand_devops_stories_direct.py --batch 2 --limit 100 --no-confirm
 ```
 
 ### Testing & Diagnostics
 ```bash
 # Test without updating
-python expand_devops_stories_direct.py --limit 10 --dry-run --no-confirm
+python scripts/expand_devops_stories_direct.py --limit 10 --dry-run --no-confirm
 
 # Check progress
-python expand_devops_stories_direct.py --status
+python scripts/expand_devops_stories_direct.py --status
 
 # Diagnose issues
-python check_ado_stories.py
+python scripts/check_ado_stories.py
 ```
 
 ### Expand All Stories (Including those with descriptions)
 ```bash
 # Overwrites existing descriptions
-python expand_devops_stories_direct.py --limit 100 --skip-with-description --no-confirm
+python scripts/expand_devops_stories_direct.py --limit 100 --skip-with-description --no-confirm
 ```
 
 ---
@@ -115,13 +117,13 @@ python expand_devops_stories_direct.py --limit 100 --skip-with-description --no-
 
 **Batch 1 (Smart Filter):**
 ```bash
-python expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
+python scripts/expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
 ```
 Result: Expands 16 stories (33 skipped - already have descriptions)
 
 **Batch 2 (All Stories):**
 ```bash
-python expand_devops_stories_direct.py --batch 2 --limit 100 --skip-with-description --no-confirm
+python scripts/expand_devops_stories_direct.py --batch 2 --limit 100 --skip-with-description --no-confirm
 ```
 Result: Expands remaining 33 stories
 
@@ -173,7 +175,7 @@ The platform requires implementation of [feature]...
 
 ## 📝 Progress Tracking
 
-Progress saved in `expansion_progress_direct.json`:
+Progress saved in `output/expansion_progress_direct.json`:
 ```json
 {
   "expanded": ["36", "37", "38", ...],
@@ -184,7 +186,7 @@ Progress saved in `expansion_progress_direct.json`:
 
 **Resume from failures:**
 ```bash
-python expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
+python scripts/expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
 ```
 
 ---
@@ -193,7 +195,7 @@ python expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
 
 ### No stories found
 ```bash
-python check_ado_stories.py
+python scripts/check_ado_stories.py
 ```
 
 ### Invalid credentials
@@ -204,8 +206,8 @@ Check `.env`:
 
 ### MCP server issues
 ```bash
-ls -la story_expansion_mcp.py
-python story_expansion_mcp.py  # Test manually
+ls -la scripts/story_expansion_mcp.py
+python scripts/story_expansion_mcp.py  # Test manually
 ```
 
 ---
@@ -223,13 +225,13 @@ python story_expansion_mcp.py  # Test manually
 
 ```bash
 # 1. Test (dry run)
-python expand_devops_stories_direct.py --limit 5 --dry-run --no-confirm
+python scripts/expand_devops_stories_direct.py --limit 5 --dry-run --no-confirm
 
 # 2. Check status
-python expand_devops_stories_direct.py --status
+python scripts/expand_devops_stories_direct.py --status
 
 # 3. Expand batch 1
-python expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
+python scripts/expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
 
 # 4. Verify in Azure DevOps
 # Open any story and check Description + Acceptance Criteria fields
@@ -239,5 +241,5 @@ python expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
 
 🚀 **Ready?** Run:
 ```bash
-python expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
+python scripts/expand_devops_stories_direct.py --batch 1 --limit 100 --no-confirm
 ```
