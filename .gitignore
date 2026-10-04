@@ -26,6 +26,9 @@ traceability_report_*.csv
 traceability_report_*.json
 ado_traceability_map.json
 
+# User data files (keep locally, don't commit)
+src/data/CIP_Desktop_User_stories_ado_version.*
+
 # Environment variables and secrets
 .env
 .env.local
