@@ -287,15 +287,18 @@ class StoryExpander:
             print(f"\n[{idx}/{len(stories)}] ID {work_item_id}: {title}")
 
             try:
-                # Prepare story data for MCP
+                # Prepare story data for MCP - include custom fields
+                fields = story.get('fields', {})
                 story_data = {
                     'story_id': str(work_item_id),
                     'title': title,
-                    'description': story.get('fields', {}).get('System.Description', ''),
-                    'epic': '',  # Not available in ADO directly
-                    'feature': '',  # Not available in ADO directly
-                    'priority': story.get('fields', {}).get('Microsoft.VSTS.Common.Priority', 'Medium'),
-                    'requirement_id': ''  # Not available without custom field
+                    'description': fields.get('System.Description', ''),
+                    'technical_requirement': fields.get('Custom.TechnicalRequirement', ''),
+                    'requirement_id': fields.get('Custom.RequirementID', ''),
+                    'delivery_phase': fields.get('Custom.DeliveryPhase', ''),
+                    'epic': fields.get('Custom.EpicName', ''),
+                    'feature': fields.get('Custom.FeatureName', ''),
+                    'priority': fields.get('Microsoft.VSTS.Common.Priority', 'Medium'),
                 }
 
                 # Call MCP to expand
