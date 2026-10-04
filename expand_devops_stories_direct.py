@@ -188,11 +188,20 @@ class AzureDevOpsClient:
                 combined.append(description)
             sections.append("\n\n".join(combined))
 
-        # Assumptions - bulleted list
+        # Assumptions - HTML bulleted list
         assumptions = expanded_data.get('assumptions', [])
         if assumptions:
-            assumptions_text = "\n".join(assumptions) if isinstance(assumptions, list) else assumptions
-            sections.append(f"<h3>Assumptions</h3>\n{assumptions_text}\n")
+            if isinstance(assumptions, list):
+                # Format as HTML unordered list
+                assumptions_html = "<ul>\n"
+                for item in assumptions:
+                    # Remove leading dashes/bullets if present
+                    clean_item = item.lstrip('-* ').strip()
+                    assumptions_html += f"<li>{clean_item}</li>\n"
+                assumptions_html += "</ul>"
+            else:
+                assumptions_html = assumptions
+            sections.append(f"<h3>Assumptions</h3>\n{assumptions_html}\n")
 
         # Dependencies
         dependencies = expanded_data.get('dependencies', [])
