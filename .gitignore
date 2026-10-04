@@ -19,7 +19,8 @@ build/
 *.swo
 *~
 
-# Generated reports and mappings
+# Generated reports and mappings (output folder)
+output/
 traceability_report_*.csv
 traceability_report_*.json
 ado_traceability_map.json
