@@ -168,42 +168,28 @@ class AzureDevOpsClient:
         """Build formatted description with all sections from new prompt"""
         sections = []
 
-        # User Story (new)
+        # Combine User Story + Detailed Description (no headers)
         user_story = expanded_data.get('user_story', '').strip()
-        if user_story:
-            sections.append(f"<h3>User Story</h3>\n{user_story}\n")
-
-        # Detailed Description
         description = expanded_data.get('expanded_description', '').strip()
-        if description:
-            sections.append(f"<h3>Detailed Description</h3>\n{description}\n")
+        if user_story or description:
+            combined = []
+            if user_story:
+                combined.append(user_story)
+            if description:
+                combined.append(description)
+            sections.append("\n\n".join(combined))
 
-        # Assumptions
+        # Assumptions - bulleted list
         assumptions = expanded_data.get('assumptions', [])
         if assumptions:
             assumptions_text = "\n".join(assumptions) if isinstance(assumptions, list) else assumptions
             sections.append(f"<h3>Assumptions</h3>\n{assumptions_text}\n")
 
-        # Dependencies (new)
+        # Dependencies
         dependencies = expanded_data.get('dependencies', [])
         if dependencies:
             deps_text = "\n".join(dependencies) if isinstance(dependencies, list) else dependencies
             sections.append(f"<h3>Dependencies</h3>\n{deps_text}\n")
-
-        # Story Quality (new)
-        story_quality = expanded_data.get('story_quality', {})
-        if story_quality:
-            quality_notes = []
-            if story_quality.get('is_broad'):
-                quality_notes.append("[BROAD] Story is broad - consider splitting")
-            if story_quality.get('can_be_split'):
-                quality_notes.append("[SPLITTABLE] Story can be split into smaller stories")
-            missing = story_quality.get('missing_information', [])
-            if missing:
-                quality_notes.append(f"[MISSING INFO] {', '.join(missing)}")
-
-            if quality_notes:
-                sections.append(f"<h3>Story Quality Notes</h3>\n" + "\n".join(quality_notes) + "\n")
 
         return "\n".join(sections)
 
