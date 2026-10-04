@@ -1,0 +1,29 @@
+Requirement ID,Story ID,Epic,Feature,Title,Description,Priority,Delivery Phase,Swimlane Step,Product Variation,Source Module
+REQ-001,STORY-001,Chat Interface,Conversational AI,User can start a conversation,Implement basic conversation endpoint,High,Phase 1,Input Processing,Standard,AI Agent
+REQ-002,STORY-002,Chat Interface,Conversational AI,User receives responses from AI,Process user input and generate AI response,High,Phase 1,Response Generation,Standard,AI Agent
+REQ-003,STORY-003,Chat Interface,Conversational AI,Conversation history is stored,Save conversation messages to database,Medium,Phase 1,Data Storage,Standard,Database
+REQ-004,STORY-004,Chat Interface,Natural Language Understanding,Extract intent from user message,Identify user intent using NLP models,High,Phase 1,NLP Processing,Standard,NLP Engine
+REQ-005,STORY-005,Chat Interface,Natural Language Understanding,Extract entities from user message,Identify named entities in queries,Medium,Phase 1,NLP Processing,Standard,NLP Engine
+REQ-006,STORY-006,Chat Interface,Natural Language Understanding,Provide confidence score for extraction,Return confidence metrics for extractions,Low,Phase 2,NLP Processing,Standard,NLP Engine
+REQ-007,STORY-007,User Authentication,Account Management,User can sign up with email,Allow users to create accounts,High,Phase 1,User Input,Standard,Auth Module
+REQ-008,STORY-008,User Authentication,Account Management,User password is encrypted,Hash and store passwords securely,High,Phase 1,Security,Standard,Security Module
+REQ-009,STORY-009,User Authentication,Account Management,User can reset password,Implement password reset flow,Medium,Phase 2,Recovery,Standard,Auth Module
+REQ-010,STORY-010,User Authentication,Session Management,User session is created on login,Generate and store session tokens,High,Phase 1,Session Handling,Standard,Session Module
+REQ-011,STORY-011,User Authentication,Session Management,User session expires after timeout,Implement session timeout logic,Medium,Phase 1,Session Handling,Standard,Session Module
+REQ-012,STORY-012,Flight Information,Search Functionality,User can search for flights,Implement flight search endpoint,High,Phase 1,Search,Standard,Search Module
+REQ-013,STORY-013,Flight Information,Search Functionality,Display search results with prices,Show available flights with pricing,High,Phase 1,Display,Standard,UI Module
+REQ-014,STORY-014,Flight Information,Search Functionality,Filter results by airline,Add airline filter to search,Medium,Phase 2,Filtering,Premium,Search Module
+REQ-015,STORY-015,Flight Information,Search Functionality,Sort results by price/departure,Implement sorting options,Medium,Phase 2,Sorting,Premium,Search Module
+REQ-016,STORY-016,Flight Information,Booking,User can select a flight,Capture flight selection,High,Phase 2,Selection,Standard,Booking Module
+REQ-017,STORY-017,Flight Information,Booking,User can enter passenger details,Collect passenger information,High,Phase 2,Data Collection,Standard,Booking Module
+REQ-018,STORY-018,Flight Information,Booking,User can select seats,Allow seat selection on aircraft,Medium,Phase 2,Selection,Premium,Booking Module
+REQ-019,STORY-019,Flight Information,Booking,Generate booking confirmation,Create and display booking confirmation,High,Phase 2,Confirmation,Standard,Booking Module
+REQ-020,STORY-020,Flight Information,Booking,Send confirmation email,Email booking details to user,Medium,Phase 2,Notification,Standard,Email Service
+REQ-021,STORY-021,Baggage Management,Policy Display,Show baggage allowance,Display airline baggage policies,High,Phase 3,Display,Standard,Content Module
+REQ-022,STORY-022,Baggage Management,Policy Display,Show baggage fees,Display excess baggage charges,Medium,Phase 3,Display,Standard,Pricing Module
+REQ-023,STORY-023,Baggage Management,Baggage Selection,User can add baggage,Allow baggage selection in booking,Medium,Phase 3,Selection,Premium,Booking Module
+REQ-024,STORY-024,Baggage Management,Baggage Selection,Calculate baggage costs,Compute total baggage fees,Medium,Phase 3,Calculation,Premium,Pricing Module
+REQ-025,STORY-025,Notifications,Email Alerts,Send boarding pass via email,Email boarding pass before flight,High,Phase 3,Email,Standard,Email Service
+REQ-026,STORY-026,Notifications,Email Alerts,Send check-in reminders,Email check-in notifications,Medium,Phase 3,Email,Standard,Email Service
+REQ-027,STORY-027,Notifications,SMS Alerts,Send SMS confirmation,Send SMS booking confirmation,Medium,Phase 3,SMS,Premium,SMS Service
+REQ-028,STORY-028,Notifications,SMS Alerts,Send SMS gate updates,Notify gate changes via SMS,Low,Phase 3,SMS,Premium,SMS Service
