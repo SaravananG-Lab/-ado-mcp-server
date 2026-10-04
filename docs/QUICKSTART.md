@@ -32,7 +32,7 @@ Required columns: Requirement ID, Story ID, Epic, Feature, Title, Description, P
 
 Optional: Swimlane Step, Product Variation, Source Module
 
-See `src/sample_stories.csv` for example.
+See `src/data/sample_stories.csv` for example.
 
 ## 5. Run
 

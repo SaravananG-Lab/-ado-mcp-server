@@ -51,6 +51,10 @@ Results in `output/`:
 
 Optional: Swimlane Step, Product Variation, Source Module
 
+## Sample Data
+
+Test the tool with `src/data/sample_stories.csv` (28 example stories).
+
 ---
 
 **Start here:** [QUICKSTART.md](QUICKSTART.md)

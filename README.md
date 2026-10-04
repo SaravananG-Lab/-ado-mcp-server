@@ -24,8 +24,10 @@ python src/ado_mcp_server.py
 ```
 docs/              - Documentation
 src/               - Source code
-├── sample_stories.csv    - Example data
-└── data/          - Your input files
+└── data/          - Data files
+    ├── sample_stories.csv         - Example data
+    ├── CIP_Desktop_User_stories_ado_version.csv
+    └── CIP_Desktop_User_stories_ado_version.xlsx
 output/            - Generated reports (auto-created)
 ```
 
