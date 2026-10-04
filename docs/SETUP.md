@@ -1,154 +1,68 @@
-# Setup Guide
+# Setup & Troubleshooting
 
-## Prerequisites
+Start with [QUICKSTART.md](QUICKSTART.md) first.
 
-- Python 3.8+
-- Azure DevOps organization and project
-- Personal Access Token (PAT)
-- Excel file with user stories
+## Detailed Troubleshooting
 
-## Installation
+### Installation Issues
 
+**ModuleNotFoundError: No module named 'pandas'**
 ```bash
-pip install pandas openpyxl requests
+pip install pandas openpyxl requests xlrd
 python --version  # Verify 3.8+
 ```
 
-## Azure DevOps Configuration
+### Authentication Issues
 
-### 1. Create Personal Access Token
+**401 Unauthorized**
+- Verify PAT token is correct (no extra spaces)
+- Check token hasn't expired (regenerate if needed)
+- Ensure scopes: Work Items (Read & Write), Project (Read)
 
-1. Go to https://dev.azure.com
-2. Click profile → Personal Access Tokens → New Token
-3. Fill in:
-   - Name: "ADO MCP Import"
-   - Expiration: 90 days
-4. Enable scopes:
-   - ✓ Work Items: Read & Write
-   - ✓ Project and Team: Read
-5. Create and copy token (won't be shown again)
+**Organization not found**
+- Verify URL: `https://dev.azure.com/organization_name`
+- Not `https://dev.azure.com/organization_name/`
 
-### 2. Get Organization URL
+### Excel Issues
 
-Format: `https://dev.azure.com/organization_name`
+**Missing columns error**
+- Excel columns must match EXACTLY (case-sensitive)
+- Required: Requirement ID, Story ID, Epic, Feature, Title, Description, Priority, Delivery Phase
+- Optional: Swimlane Step, Product Variation, Source Module
 
-Example: `https://dev.azure.com/myorg`
+**File encoding issues**
+- Save Excel as `.csv` with UTF-8 or Windows-1252 encoding
+- Or use `.xlsx` (Excel native format)
 
-### 3. Get Project Name
+### Import Issues
 
-Find in Azure DevOps URL or project settings.
+**Network timeout**
+- Automatic retry with exponential backoff (3 attempts)
+- Check internet connection
+- May be rate-limited by Azure DevOps
 
-## Excel File Format
+**Import hangs**
+- Check your network connection
+- Try smaller file first
+- May hit ADO rate limits (wait and retry)
 
-| Column | Required | Example |
-|--------|----------|---------|
-| Requirement ID | Yes | REQ-001 |
-| Story ID | Yes | STORY-001 |
-| Epic | Yes | Chat Interface |
-| Feature | Yes | Conversational AI |
-| Title | Yes | User can start conversation |
-| Description | Yes | Implement conversation endpoint |
-| Priority | Yes | High |
-| Delivery Phase | Yes | Phase 1 |
-| Swimlane Step | No | Input Processing |
-| Product Variation | No | Standard |
-| Source Module | No | AI Agent |
-
-See `sample_stories.csv` for example.
-
-## First Run
-
-### Option A: Using .env File (Recommended)
-
-```bash
-# Copy template
-cp .env.example .env
-
-# Edit .env with your values
-# AZURE_ORG_URL=https://dev.azure.com/myorg
-# AZURE_PROJECT_NAME=MyProject
-# AZURE_PAT=your_token_here
-# EXCEL_FILE_PATH=sample_stories.csv
-
-# Run import
-python ado_mcp_server.py
-```
-
-See `ENV_SETUP.md` for all environment variables.
-
-### Option B: Command Line
-
-```bash
-python ado_mcp_server.py sample_stories.csv \
-  --org-url https://dev.azure.com/myorg \
-  --project MyProject \
-  --pat your_token_here
-```
-
-### Option C: Python API
+## Query Results After Import
 
 ```python
-from ado_mcp_server import BulkImporter
-from config import get_ado_config, get_config
+from src.config import get_ado_config
+from src.ado_mcp_server import TraceabilityEngine
 
-# Load from .env
-config = get_ado_config()
-excel_file = get_config("EXCEL_FILE_PATH", "sample_stories.csv")
-
-importer = BulkImporter(
-    excel_file=excel_file,
-    org_url=config["org_url"],
-    project_name=config["project_name"],
-    pat=config["pat"]
-)
-
-result = importer.run()
-print(f"Imported: {result['imported']}, Failed: {result['failed']}")
-```
-
-## Output Files
-
-After successful import:
-
-1. **ado_traceability_map.json** - Full mapping of requirements to work items
-2. **traceability_report_*.csv** - Human-readable audit trail
-
-## Verify in Azure DevOps
-
-1. Go to your project
-2. Navigate to Work Items
-3. Search for the Epic/Feature names from your Excel file
-4. Verify the story hierarchy and tags
-
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| ModuleNotFoundError: pandas | Run: `pip install pandas openpyxl xlrd` |
-| 401 Unauthorized | Verify PAT is correct (no extra spaces), check expiration, verify scopes |
-| Project not found | Check exact project name (case-sensitive), verify org URL format |
-| Missing columns | Excel columns must match exactly (case-sensitive) |
-| Import is slow | Check network, may be rate-limited by ADO |
-
-## Query Traceability
-
-After import, query the mapping:
-
-```python
-from ado_mcp_server import TraceabilityEngine
-
-engine = TraceabilityEngine("ado_traceability_map.json")
+engine = TraceabilityEngine("output/ado_traceability_map.json")
 entry = engine.get_entry("REQ-001")
 print(f"Epic: {entry['epic']['name']}")
-print(f"Feature: {entry['feature']['name']}")
-print(f"Stories: {len(entry['stories'])}")
-
-# Generate custom report
-engine.generate_csv_report("custom_report.csv")
 ```
 
-## Next Steps
+## Environment Variables Reference
 
-1. Verify data in Azure DevOps
-2. Review traceability_report_*.csv
-3. Integrate into CI/CD pipelines if needed
+See [ENV_SETUP.md](ENV_SETUP.md) for complete list.
+
+## Need More Help?
+
+1. Check [QUICKSTART.md](QUICKSTART.md) - basic setup
+2. Check [ENV_SETUP.md](ENV_SETUP.md) - configuration
+3. Run with `--help`: `python src/ado_mcp_server.py --help`
